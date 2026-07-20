@@ -1,24 +1,11 @@
 import { createContext, useContext, useEffect, useState, useCallback } from 'react'
+import {
+  fetchAll, createRecord, updateRecord, deleteRecord,
+  adminLoginFirebase, useFirebase
+} from '../lib/firebaseApi'
 
 const AdminCtx = createContext(null)
 export const useAdmin = () => useContext(AdminCtx)
-
-// Backend API (Base44 for now, Firebase will be added)
-const API_URL = 'https://vesper-ecdb8354.base44.app/functions/ngomsApi'
-
-async function api(action, extra = {}) {
-  try {
-    const res = await fetch(API_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action, ...extra }),
-    })
-    return await res.json()
-  } catch (err) {
-    console.error('API error:', err)
-    return { success: false, error: err.message }
-  }
-}
 
 export function AdminProvider({ children }) {
   const [admin, setAdmin] = useState(() => {
@@ -33,10 +20,11 @@ export function AdminProvider({ children }) {
     logs: [], messages: [], users: [],
   })
   const [loading, setLoading] = useState(true)
+  const [isFirebase] = useState(useFirebase)
 
   const refresh = useCallback(async () => {
     setLoading(true)
-    const res = await api('get_app_config')
+    const res = await fetchAll()
     if (res.success) {
       setData({
         banner: res.banner, appSettings: res.appSettings,
@@ -56,7 +44,7 @@ export function AdminProvider({ children }) {
   useEffect(() => { if (admin) refresh() }, [admin, refresh])
 
   const login = useCallback(async (email, pass) => {
-    const res = await api('admin_login', { payload: { email, password: pass } })
+    const res = await adminLoginFirebase(email, pass)
     if (res.success) {
       sessionStorage.setItem('ngoms_admin', JSON.stringify(res.session))
       setAdmin(res.session)
@@ -70,9 +58,8 @@ export function AdminProvider({ children }) {
     setAdmin(null)
   }, [])
 
-  // CRUD operations
   const create = useCallback(async (col, item) => {
-    const res = await api('create', { collection: col, data: item })
+    const res = await createRecord(col, item)
     if (res.success) {
       const key = col === 'flashcards' ? 'flashcardDecks' : col
       setData(s => ({ ...s, [key]: [...(s[key] || []), res.data] }))
@@ -82,7 +69,7 @@ export function AdminProvider({ children }) {
   }, [])
 
   const update = useCallback(async (col, id, patch) => {
-    const res = await api('update', { collection: col, id, data: patch })
+    const res = await updateRecord(col, id, patch)
     if (res.success) {
       const key = col === 'flashcards' ? 'flashcardDecks' : col
       setData(s => ({ ...s, [key]: (s[key] || []).map(x => x.id === id ? { ...x, ...patch } : x) }))
@@ -90,7 +77,7 @@ export function AdminProvider({ children }) {
   }, [])
 
   const remove = useCallback(async (col, id) => {
-    const res = await api('delete', { collection: col, id })
+    const res = await deleteRecord(col, id)
     if (res.success) {
       const key = col === 'flashcards' ? 'flashcardDecks' : col
       setData(s => ({ ...s, [key]: (s[key] || []).filter(x => x.id !== id) }))
@@ -128,7 +115,7 @@ export function AdminProvider({ children }) {
 
   return (
     <AdminCtx.Provider value={{
-      ...data, loading, admin,
+      ...data, loading, admin, isFirebase,
       login, logout, refresh,
       create, update, remove,
       setBanner, setSettings, pushNotification, toggleFeature,

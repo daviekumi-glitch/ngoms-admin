@@ -1,0 +1,11 @@
+{
+  "appId": "ai.ngoms.admin",
+  "appName": "Ngoms AI Admin",
+  "webDir": "dist",
+  "server": {
+    "androidScheme": "https"
+  },
+  "android": {
+    "allowMixedContent": true
+  }
+}

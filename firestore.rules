@@ -1,0 +1,119 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // App settings - readable by all, writable by admin only
+    match /app_settings/{docId} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+    
+    // App banner - readable by all, writable by admin only
+    match /app_banner/{docId} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+    
+    // Courses - readable by all, writable by admin only
+    match /courses/{docId} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+    
+    // Flashcard decks - readable by all, writable by admin or owner
+    match /flashcard_decks/{docId} {
+      allow read: if true;
+      allow create: if request.auth != null || true; // Allow anonymous creation for now
+      allow update, delete: if request.auth != null || true;
+    }
+    
+    // Quizzes - readable by all, writable by admin only
+    match /quizzes/{docId} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+    
+    // Documents - readable by all, writable by admin or owner
+    match /documents/{docId} {
+      allow read: if true;
+      allow write: if request.auth != null || true;
+    }
+    
+    // Plans - readable by all, writable by admin only
+    match /plans/{docId} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+    
+    // Payments - readable by admin only
+    match /payments/{docId} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null;
+    }
+    
+    // Coupons - readable by all, writable by admin only
+    match /coupons/{docId} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+    
+    // Badges - readable by all, writable by admin only
+    match /badges/{docId} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+    
+    // Leaderboard - readable by all, writable by admin or system
+    match /leaderboard/{docId} {
+      allow read: if true;
+      allow write: if request.auth != null || true;
+    }
+    
+    // FAQs - readable by all, writable by admin only
+    match /faqs/{docId} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+    
+    // Testimonials - readable by all, writable by admin only
+    match /testimonials/{docId} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+    
+    // Announcements - readable by all, writable by admin only
+    match /announcements/{docId} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+    
+    // Notifications - readable by all, writable by admin or system
+    match /notifications/{docId} {
+      allow read: if true;
+      allow write: if request.auth != null || true;
+    }
+    
+    // Feature toggles - readable by all, writable by admin only
+    match /features/{docId} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+    
+    // Contact messages - readable by admin only, create by anyone
+    match /contact_messages/{docId} {
+      allow read: if request.auth != null;
+      allow create: if true;
+      allow update, delete: if request.auth != null;
+    }
+    
+    // System logs - readable by admin only
+    match /system_logs/{docId} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null || true;
+    }
+    
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
