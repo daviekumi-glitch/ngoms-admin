@@ -4,26 +4,8 @@ import Login from './pages/Login'
 import Dashboard from './pages/Dashboard'
 import Layout from './components/Layout'
 import CrudManager from './pages/CrudManager'
-
-// All collection configs
-const COLLECTIONS = [
-  { name: 'courses', label: 'Courses', entity: 'Course', icon: 'BookOpen' },
-  { name: 'flashcards', label: 'Flashcard Decks', entity: 'FlashcardDeck', icon: 'Layers' },
-  { name: 'quizzes', label: 'Quizzes', entity: 'Quiz', icon: 'HelpCircle' },
-  { name: 'documents', label: 'Documents', entity: 'Document', icon: 'FileText' },
-  { name: 'plans', label: 'Subscription Plans', entity: 'Plan', icon: 'CreditCard' },
-  { name: 'payments', label: 'Payments', entity: 'Payment', icon: 'DollarSign' },
-  { name: 'coupons', label: 'Coupons', entity: 'Coupon', icon: 'Ticket' },
-  { name: 'badges', label: 'Badges', entity: 'Badge', icon: 'Award' },
-  { name: 'leaderboard', label: 'Leaderboard', entity: 'LeaderboardEntry', icon: 'Trophy' },
-  { name: 'faqs', label: 'FAQs', entity: 'FAQ', icon: 'HelpCircle' },
-  { name: 'testimonials', label: 'Testimonials', entity: 'Testimonial', icon: 'Star' },
-  { name: 'announcements', label: 'Announcements', entity: 'Announcement', icon: 'Megaphone' },
-  { name: 'notifications', label: 'Notifications', entity: 'AppNotification', icon: 'Bell' },
-  { name: 'features', label: 'Feature Toggles', entity: 'FeatureToggle', icon: 'ToggleRight' },
-  { name: 'messages', label: 'Contact Messages', entity: 'ContactMessage', icon: 'Mail' },
-  { name: 'logs', label: 'System Logs', entity: 'SystemLog', icon: 'Activity' },
-]
+import BannerManager from './pages/BannerManager'
+import SettingsManager from './pages/SettingsManager'
 
 export default function App() {
   return (
@@ -32,10 +14,24 @@ export default function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/" element={<Layout />}>
           <Route index element={<Dashboard />} />
-          {COLLECTIONS.map(col => (
-            <Route key={col.name} path={col.name} 
-              element={<CrudManager collection={col.name} label={col.label} />} />
-          ))}
+          <Route path="courses" element={<CrudManager collection="courses" label="Courses" />} />
+          <Route path="flashcards" element={<CrudManager collection="flashcards" label="Flashcard Decks" />} />
+          <Route path="quizzes" element={<CrudManager collection="quizzes" label="Quizzes" />} />
+          <Route path="documents" element={<CrudManager collection="documents" label="Documents" />} />
+          <Route path="plans" element={<CrudManager collection="plans" label="Subscription Plans" />} />
+          <Route path="payments" element={<CrudManager collection="payments" label="Payments" />} />
+          <Route path="coupons" element={<CrudManager collection="coupons" label="Coupons" />} />
+          <Route path="badges" element={<CrudManager collection="badges" label="Badges" />} />
+          <Route path="leaderboard" element={<CrudManager collection="leaderboard" label="Leaderboard" />} />
+          <Route path="faqs" element={<CrudManager collection="faqs" label="FAQs" />} />
+          <Route path="testimonials" element={<CrudManager collection="testimonials" label="Testimonials" />} />
+          <Route path="announcements" element={<CrudManager collection="announcements" label="Announcements" />} />
+          <Route path="notifications" element={<CrudManager collection="notifications" label="Notifications" />} />
+          <Route path="features" element={<CrudManager collection="features" label="Feature Toggles" />} />
+          <Route path="messages" element={<CrudManager collection="messages" label="Contact Messages" />} />
+          <Route path="logs" element={<CrudManager collection="logs" label="System Logs" />} />
+          <Route path="banner" element={<BannerManager />} />
+          <Route path="settings" element={<SettingsManager />} />
         </Route>
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>

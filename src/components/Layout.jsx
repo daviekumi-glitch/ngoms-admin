@@ -3,7 +3,7 @@ import { useAdmin } from '../context/AdminContext'
 import {
   LayoutDashboard, BookOpen, Layers, HelpCircle, FileText, CreditCard,
   DollarSign, Ticket, Award, Trophy, Star, Megaphone, Bell, ToggleRight,
-  Mail, Activity, LogOut, Menu, X, Settings, ChevronRight
+  Mail, Activity, LogOut, Menu, X, Settings, ChevronRight, Image, Sliders
 } from 'lucide-react'
 import { useState } from 'react'
 
@@ -23,6 +23,8 @@ const NAV_ITEMS = [
   { path: '/announcements', label: 'Announcements', icon: Megaphone },
   { path: '/notifications', label: 'Notifications', icon: Bell },
   { path: '/features', label: 'Features', icon: ToggleRight },
+  { path: '/banner', label: 'App Banner', icon: Image },
+  { path: '/settings', label: 'App Settings', icon: Sliders },
   { path: '/messages', label: 'Messages', icon: Mail },
   { path: '/logs', label: 'System Logs', icon: Activity },
 ]
@@ -45,7 +47,6 @@ export default function Layout() {
 
   return (
     <div className="min-h-screen bg-navy-900 flex">
-      {/* Sidebar */}
       <aside className={`fixed lg:sticky top-0 left-0 h-screen w-64 bg-navy-800/80 backdrop-blur-xl border-r border-white/10 z-50 transition-transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
         <div className="p-4 border-b border-white/10">
           <div className="flex items-center gap-2">
@@ -81,12 +82,9 @@ export default function Layout() {
         </div>
       </aside>
 
-      {/* Overlay */}
       {sidebarOpen && <div className="fixed inset-0 bg-black/50 z-40 lg:hidden" onClick={() => setSidebarOpen(false)} />}
 
-      {/* Main content */}
       <div className="flex-1 min-w-0">
-        {/* Top bar */}
         <header className="sticky top-0 z-30 bg-navy-900/80 backdrop-blur-xl border-b border-white/10 px-4 py-3 flex items-center gap-3">
           <button onClick={() => setSidebarOpen(!sidebarOpen)} className="lg:hidden text-white/60">
             {sidebarOpen ? <X size={20} /> : <Menu size={20} />}
@@ -101,7 +99,6 @@ export default function Layout() {
           </div>
         </header>
 
-        {/* Page content */}
         <main className="p-4 md:p-6">
           <Outlet />
         </main>
