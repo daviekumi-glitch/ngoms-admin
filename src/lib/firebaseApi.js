@@ -3,6 +3,7 @@ import {
   deleteDoc, query, where, onSnapshot, serverTimestamp, Timestamp
 } from 'firebase/firestore'
 import { db, COLLECTION_MAP } from './firebase'
+import { seedFirestore } from './seedData'
 
 const isNative = typeof window !== 'undefined' && window.Capacitor?.isNative
 const BASE44_API = 'https://vesper-ecdb8354.base44.app/functions/ngomsApi'
@@ -36,6 +37,8 @@ function docToObject(d) {
 
 export async function fetchAll() {
   if (useFirebase) {
+    await seedFirestore()
+
     const result = {}
     const collections = [
       'app_settings', 'app_banner', 'courses', 'flashcard_decks',
@@ -116,24 +119,19 @@ export async function deleteRecord(collectionKey, id) {
 }
 
 export function subscribeToCollection(collectionKey, callback) {
-  if (!useFirebase) {
-    console.warn('Real-time updates only available with Firebase')
-    return () => {}
-  }
+  if (!useFirebase) return () => {}
   const colName = COLLECTION_MAP[collectionKey] || collectionKey
   return onSnapshot(collection(db, colName), (snap) => {
     callback(snap.docs.map(docToObject))
   })
 }
 
-// Admin login via Firebase Auth (for APK mode)
 export async function adminLoginFirebase(email, password) {
   if (useFirebase) {
     try {
       const { signInWithEmailAndPassword } = await import('firebase/auth')
-      const userCred = await signInWithEmailAndPassword(
-        (await import('./firebase')).auth, email, password
-      )
+      const { auth } = await import('./firebase')
+      const userCred = await signInWithEmailAndPassword(auth, email, password)
       return { success: true, session: { email: userCred.user.email, uid: userCred.user.uid } }
     } catch (err) {
       return { success: false, error: err.message }
@@ -142,4 +140,4 @@ export async function adminLoginFirebase(email, password) {
   return base44Api('admin_login', { payload: { email, password } })
 }
 
-export { useFirebase }
+export { useFirebase, seedFirestore }
