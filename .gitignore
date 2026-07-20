@@ -3,3 +3,11 @@ dist/
 .env
 .env.local
 *.log
+# Gemini CLI settings
+
+.gemini/
+
+
+# GitHub Actions credentials
+
+gha-creds-*.json
